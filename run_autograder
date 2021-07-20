@@ -7,15 +7,15 @@ cd /autograder/source
 # the right place
 cp /autograder/submission/*.java /autograder/source/src/main/java/gradescope/
 
-text="package gradescope;  "
-
 for file in /autograder/source/src/main/java/gradescope/*.java; do
-  echo $text $file >> $file.$$
+  cat /autograder/source/prefix $file >> $file.$$
   mv $file.$$ $file
 done
 
+chmod +x gradlew
+
 # Run the test cases
-gradle test
+./gradlew test
 
 # Create the json file
 python3 make_result.py
@@ -24,7 +24,7 @@ python3 make_result.py
 cp /autograder/source/results.json /autograder/results/
 
 # Clean up
-rm results.txt
-rm results.json
+rm /autograder/source/results.txt
+rm /autograder/source/results.json
 
 rm /autograder/source/src/main/java/gradescope/*.java

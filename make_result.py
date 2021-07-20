@@ -34,7 +34,13 @@ class Test:
         else:
             self.result = "Fail"
             self.name, self.score, self.hidden = format_name(split[0])
-            self.output = split[3] + "\n" + split[4]
+
+            out = split[3] + "\n"
+
+            for part in split[4].replace("[", "").replace("]", "").split(", "):
+                out += part + "\n"
+
+            self.output = out
 
 result = {}
 
@@ -43,7 +49,7 @@ passed = 0
 score = 0
 max_score = 0
 
-with open("results.txt", "r") as f:
+with open("/autograder/source/results.txt", "r") as f:
     lines = f.readlines()
     for line in lines:
         test = Test(line)
@@ -81,6 +87,6 @@ for test in tests:
 result["tests"] = test_results
 
 json_string = json.dumps(result, indent=4)
-json_file = open("results.json", "w")
+json_file = open("/autograder/source/results.json", "w")
 json_file.write(json_string)
 json_file.close()

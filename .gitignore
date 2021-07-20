@@ -17,3 +17,5 @@ results.json
 results.txt
 
 settings.gradle
+
+*.zip
