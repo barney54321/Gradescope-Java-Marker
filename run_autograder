@@ -1,0 +1,30 @@
+#!/usr/bin/env bash
+
+cd /autograder/source
+
+# Copy the student's code into the autograder directory. Make sure
+# student has the right package name in their file and that it's in
+# the right place
+cp /autograder/submission/*.java /autograder/source/src/main/java/gradescope/
+
+text="package gradescope;  "
+
+for file in /autograder/source/src/main/java/gradescope/*.java; do
+  echo $text $file >> $file.$$
+  mv $file.$$ $file
+done
+
+# Run the test cases
+gradle test
+
+# Create the json file
+python3 make_result.py
+
+# Move the json file
+cp /autograder/source/results.json /autograder/results/
+
+# Clean up
+rm results.txt
+rm results.json
+
+rm /autograder/source/src/main/java/gradescope/*.java
