@@ -48,20 +48,35 @@ tests = []
 passed = 0
 score = 0
 max_score = 0
+failed = False
+compiler_output = ""
 
-with open("/autograder/source/results.txt", "r") as f:
-    lines = f.readlines()
-    for line in lines:
-        test = Test(line)
-        tests.append(test)
-        max_score += test.score
-        if test.result == "Pass":
-            passed += 1
-            score += test.score
+try:
+    with open("/autograder/source/results.txt", "r") as f:
+        lines = f.readlines()
+        for line in lines:
+            test = Test(line)
+            tests.append(test)
+            max_score += test.score
+            if test.result == "Pass":
+                passed += 1
+                score += test.score
+except FileNotFoundError as e:
+    # No results
+    failed = True
+    with open("/autograder/source/compiler.txt", "r") as f:
+        lines = f.readlines()
+        for line in lines:
+            compiler_output = compiler_output + line + "\n"
+    max_score = 100
 
 tests.sort(key=lambda x: x.name)
 
-result["output"] = "Passed " + str(passed) + " out of " + str(len(tests)) + " test cases. Score: " + str(score) + "/" + str(max_score)
+if not failed:
+    result["output"] = "Passed " + str(passed) + " out of " + str(len(tests)) + " test cases. Score: " + str(score) + "/" + str(max_score)
+else:
+    result["output"] = "Your code did not compile: \n:" + compiler_output
+    result["score"] = 0
 
 test_results = []
 
@@ -84,7 +99,8 @@ for test in tests:
 
     test_results.append(obj)
 
-result["tests"] = test_results
+if len(test_results) > 0:
+    result["tests"] = test_results
 
 json_string = json.dumps(result, indent=4)
 json_file = open("/autograder/source/results.json", "w")

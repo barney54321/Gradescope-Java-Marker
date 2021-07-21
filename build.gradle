@@ -46,3 +46,23 @@ test {
         }
     }
 }
+
+class CompilerListener implements StandardOutputListener {
+
+    @Override
+    void onOutput(CharSequence charSequence) {
+        def f = new File("compiler.txt")
+        f.append(charSequence)
+    }
+}
+
+compileJava {
+    // Clear output file
+    def f = new File("compiler.txt")
+    f.text = ""
+
+    def logManager = getLogging()
+    def compilerListener = new CompilerListener()
+    logManager.addStandardOutputListener(compilerListener)
+    logManager.addStandardErrorListener(compilerListener)
+}
