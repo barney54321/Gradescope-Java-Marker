@@ -92,6 +92,8 @@ for test in tests:
 
     obj["output"] = test.output
 
+    obj["name"] = test.name
+
     if test.hidden:
         obj["visibility"] = "after_published"
     else:
