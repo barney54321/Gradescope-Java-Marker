@@ -37,8 +37,13 @@ class Test:
 
             out = split[3] + "\n"
 
+            i = 0
             for part in split[4].replace("[", "").replace("]", "").split(", "):
+                i += 1
                 out += part + "\n"
+
+                if i > 10:
+                    break
 
             self.output = out
 
